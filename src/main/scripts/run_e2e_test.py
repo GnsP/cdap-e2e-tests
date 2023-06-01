@@ -46,10 +46,10 @@ r = requests.get(sandbox_url)
 z = zipfile.ZipFile(io.BytesIO(r.content))
 z.extractall("./sandbox")
 
-print("Installing gcs connector jar")
-gcs_jar_url = "https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-2.2.5.jar"
-gcs_jar_fname = f"sandbox/{sandbox_dir}/lib/gcs-connector-hadoop2-2.2.5.jar"
-urllib.request.urlretrieve(gcs_jar_url, gcs_jar_fname)
+# print("Installing gcs connector jar")
+# gcs_jar_url = "https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-2.2.5.jar"
+# gcs_jar_fname = f"sandbox/{sandbox_dir}/lib/gcs-connector-hadoop2-2.2.5.jar"
+# urllib.request.urlretrieve(gcs_jar_url, gcs_jar_fname)
 
 print("Start the sandbox")
 run_shell_command(f"chmod +x sandbox/{sandbox_dir}/bin/cdap")
@@ -60,6 +60,10 @@ sandbox_start_cmd = "sandbox/" + sandbox_dir + "/bin/cdap sandbox restart"
 process = subprocess.Popen(sandbox_start_cmd, shell=True, env=my_env)
 process.communicate()
 assert process.returncode == 0
+
+res = requests.get('http://localhost:11011')
+print(res.text)
+exit(0)
 
 # Setting the task executor memory
 res = requests.put('http://localhost:11015/v3/preferences', headers= {'Content-Type': 'application/json'}, json={'task.executor.system.resources.memory': 4096})
